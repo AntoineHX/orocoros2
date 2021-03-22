@@ -88,19 +88,20 @@ void refereeComp::updateHook()
 {
   // Process Inputs
   //Orocos ports
-  bool input_player1, input_player2;
-  // if (input_port_.read(input_temp) == RTT::FlowStatus::NewData)
-  // {
-  //     input_port_value_ = input_temp;
-  // }
-  player1_miss_port_.read(input_player1);
-  player2_miss_port_.read(input_player2);
+  bool input_player1, input_player2, new_data =false;
+  if (player1_miss_port_.read(input_player1) == RTT::FlowStatus::NewData)
+    new_data = true;
+  if (player2_miss_port_.read(input_player2) == RTT::FlowStatus::NewData)
+    new_data = true;
 
   // Do Something
-  if(input_player1)
-    current_score_-=1;
-  if(input_player2)
-    current_score_+=1;
+  if(new_data)
+  {
+    if(input_player1)
+      current_score_-=1;
+    if(input_player2)
+      current_score_+=1;
+  }
 
   // Process Outputs
   //ROS ports
@@ -111,7 +112,7 @@ void refereeComp::updateHook()
       std::cerr << "refereeComp [" << getName() << "]: score_port failed to write" << std::endl;
   }
 
-  std::cout << "refereeComp [" << getName() << "]: updated" << std::endl;
+  // std::cout << "refereeComp [" << getName() << "]: updated" << std::endl;
 }
 
 void refereeComp::stopHook()

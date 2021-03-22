@@ -48,9 +48,9 @@ bool pongComp::configureHook()
   //ROS Topics
   if (connect_to_topics_)
   {
-    if (not player_action_port_.createStream(rtt_ros2_topics::topic("/" + getName() + "/player_action_port_")))
+    if (not player_action_port_.createStream(rtt_ros2_topics::topic("/" + getName() + "/player_action_port")))
     {
-        std::cout << "pongComp [" << getName() << "]: failed to connect to ROS topic [~/player_action_port_]" << std::endl;
+        std::cout << "pongComp [" << getName() << "]: failed to connect to ROS topic [~/player_action_port]" << std::endl;
         success = false;
     }
   }
@@ -69,29 +69,26 @@ bool pongComp::startHook()
 void pongComp::updateHook()
 {
   //Get latest value from rosparam
-  boost::shared_ptr<rtt_ros2_params::RosParam> rosparam = this->getProvider<rtt_ros2_params::RosParam>("rosparam");
-  if (rosparam and rosparam->ready())
-  {
-    if (not rosparam->loadProperty("hit_chance", "hit_chance"))
-    {
-        std::cout << "pongComp [" << getName() << "]: failed to update rosparam [hit_chance]" << std::endl;
-    }
-  }
+  // boost::shared_ptr<rtt_ros2_params::RosParam> rosparam = this->getProvider<rtt_ros2_params::RosParam>("rosparam");
+  // if (rosparam and rosparam->ready())
+  // {
+  //   if (not rosparam->loadProperty("hit_chance", "hit_chance"))
+  //   {
+  //       std::cout << "pongComp [" << getName() << "]: failed to update rosparam [hit_chance]" << std::endl;
+  //   }
+  // }
 
   // Process Inputs
   //Orocos ports
-  bool input_temp;
-  // if (input_port_.read(input_temp) == RTT::FlowStatus::NewData)
-  // {
-  //     input_port_value_ = input_temp;
-  // }
-  incoming_ball_port_.read(input_temp);
+  bool incoming_ball=false, new_data=false;
+  if (incoming_ball_port_.read(incoming_ball) == RTT::FlowStatus::NewData)
+    new_data = true;
 
   // Do Something
   std_msgs::msg::Int32 action;
   action.data = 0; //Wait
   bool miss=false;
-  if(input_temp)
+  if(new_data && incoming_ball)
   {
     action.data = 1; //Hit
 
@@ -101,13 +98,16 @@ void pongComp::updateHook()
 
   // Process Outputs
   //Orocos ports
-  if (input_temp && not return_ball_port_.write(!miss) == RTT::WriteStatus::WriteSuccess)
+  if(new_data)
   {
-      std::cerr << "pongComp [" << getName() << "]: return_ball_port failed to write" << std::endl;
-  }
-  if (not miss_ball_port_.write(miss) == RTT::WriteStatus::WriteSuccess)
-  {
-      std::cerr << "pongComp [" << getName() << "]: return_ball_port failed to write" << std::endl;
+    if (incoming_ball && not return_ball_port_.write(!miss) == RTT::WriteStatus::WriteSuccess)
+    {
+        std::cerr << "pongComp [" << getName() << "]: return_ball_port failed to write" << std::endl;
+    }
+    if (not miss_ball_port_.write(miss) == RTT::WriteStatus::WriteSuccess)
+    {
+        std::cerr << "pongComp [" << getName() << "]: return_ball_port failed to write" << std::endl;
+    }
   }
   //ROS ports
   if (not player_action_port_.write(action) == RTT::WriteStatus::WriteSuccess)
@@ -115,7 +115,7 @@ void pongComp::updateHook()
       std::cerr << "pongComp [" << getName() << "]: player_action_port failed to write" << std::endl;
   }
 
-  std::cout << "pongComp [" << getName() << "]: updated" << std::endl;
+  // std::cout << "pongComp [" << getName() << "]: updated" << std::endl;
 }
 
 void pongComp::stopHook()

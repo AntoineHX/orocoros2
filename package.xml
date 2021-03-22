@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>orocoros2</name>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <description>Experiments wuth Orocos and ROS2</description>
   <maintainer email="harle@isir.upmc.fr">Antoine Harlé</maintainer>
   <license>BSD</license>
@@ -13,7 +13,7 @@
   <depend>rclcpp</depend>
   <depend>rtt_ros2</depend>
   <depend>rtt_ros2_params</depend>
-  <!-- <depend>rtt_ros2_std_msgs</depend> -->
+  <depend>rtt_ros2_std_msgs</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

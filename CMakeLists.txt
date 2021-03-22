@@ -11,6 +11,8 @@ find_package(rtt_ros2 REQUIRED)
 find_package(rtt_ros2_params REQUIRED)
 find_package(rtt_ros2_node REQUIRED) # Required ?
 find_package(rtt_ros2_std_msgs REQUIRED)
+find_package(rtt_ros2_oe_msgs REQUIRED)
+# find_package(orocoros2_rtt_msgs REQUIRED)
 
 orocos_use_package(ocl-deployment REQUIRED)
 orocos_use_package(ocl-taskbrowser REQUIRED)
@@ -20,7 +22,7 @@ include_directories(include)
 #   ${Boost_INCLUDE_DIRS}
 # )
 
-# pongComp
+# pingComp
 orocos_component(pongComp
   src/pongComp.cpp
 )
@@ -30,6 +32,20 @@ ament_target_dependencies(pongComp
 )
 target_link_libraries(pongComp
   rtt_ros2_std_msgs::rtt_std_msgs_typekit
+)
+
+# refereeComp
+orocos_component(refereeComp
+  src/refereeComp.cpp
+)
+ament_target_dependencies(refereeComp
+  rclcpp
+  rtt_ros2_params
+)
+target_link_libraries(refereeComp
+  rtt_ros2_std_msgs::rtt_std_msgs_typekit
+  rtt_ros2_oe_msgs::rtt_oe_msgs_typekit
+  # orocoros2_rtt_msgs::rtt_orocoros2_msgs_typekit #????
 )
 # orocos_executable(simple_ros_rtt
 #   src/simple_ros_rtt.cpp
@@ -51,6 +67,8 @@ install(DIRECTORY launch
 
 rtt_ros2_export_plugin_depend(rtt_ros2_params)
 rtt_ros2_export_plugin_depend(rtt_ros2_std_msgs)
+rtt_ros2_export_plugin_depend(rtt_ros2_oe_msgs)
+# rtt_ros2_export_plugin_depend(orocoros2_rtt_msgs)
 
 find_package(ament_cmake REQUIRED)
 
@@ -62,4 +80,6 @@ orocos_generate_package(
     rtt_ros2
     rtt_ros2_params
     rtt_ros2_std_msgs
+    rtt_ros2_oe_msgs
+    # orocoros2_rtt_msgs
 )

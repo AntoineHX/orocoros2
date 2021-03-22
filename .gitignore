@@ -1,0 +1,4 @@
+orocos.log
+.tb_history
+launch/__pycache__
+test/__pycache__

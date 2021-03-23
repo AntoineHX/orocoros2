@@ -40,7 +40,7 @@ bool pongComp::configureHook()
     // {
     //     std::cout << "pongComp [" << getName() << "]: failed to update rosparam [connect_to_topics]" << std::endl;
     // }
-    if (not rosparam->storeProperty("hit_chance", "hit_chance"))  // set() here to initialize rosparam value
+    if (not rosparam->storeProperty("hit_chance", getName()+"_hit_chance"))  // set() here to initialize rosparam value
     {
         std::cout << "pongComp [" << getName() << "]: failed to update rosparam [hit_chance]" << std::endl;
     }
@@ -69,14 +69,15 @@ bool pongComp::startHook()
 void pongComp::updateHook()
 {
   //Get latest value from rosparam
-  // boost::shared_ptr<rtt_ros2_params::RosParam> rosparam = this->getProvider<rtt_ros2_params::RosParam>("rosparam");
-  // if (rosparam and rosparam->ready())
-  // {
-  //   if (not rosparam->loadProperty("hit_chance", "hit_chance"))
-  //   {
-  //       std::cout << "pongComp [" << getName() << "]: failed to update rosparam [hit_chance]" << std::endl;
-  //   }
-  // }
+  boost::shared_ptr<rtt_ros2_params::RosParam> rosparam = this->getProvider<rtt_ros2_params::RosParam>("rosparam");
+  if (rosparam and rosparam->ready())
+  {
+    hit_chance_=rosparam->getParameter(getName()+"_hit_chance").get<rclcpp::ParameterType::PARAMETER_DOUBLE>(); //Get without error messages
+    // if (not rosparam->loadProperty("hit_chance", "hit_chance")) //Work but throw constant error messages
+    // {
+    //     std::cout << "pongComp [" << getName() << "]: failed to update rosparam [hit_chance]" << std::endl;
+    // }
+  }
 
   // Process Inputs
   //Orocos ports
@@ -90,10 +91,13 @@ void pongComp::updateHook()
   bool miss=false;
   if(new_data && incoming_ball)
   {
-    action.data = 1; //Hit
-
-    miss = true;
-    action.data = 2; //Miss
+    if(rand()%100<hit_chance_*100)
+      action.data = 1; //Hit
+    else
+    {
+      miss = true;
+      action.data = 2; //Miss
+    }
   }
 
   // Process Outputs

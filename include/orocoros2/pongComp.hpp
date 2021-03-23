@@ -7,6 +7,7 @@
 #include <rtt_ros2_topics/rostopic.hpp>
 #include <rtt_ros2_params/rosparam.hpp>
 #include <std_msgs/typekit/Types.hpp>
+#include <stdlib.h>//Random gen
 
 namespace orocoros2
 {

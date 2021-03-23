@@ -3,7 +3,7 @@
 
 #include <rtt/Component.hpp>
 #include <rtt/RTT.hpp>
-#include <rtt_ros2_services/rosservice.hpp>
+// #include <rtt_ros2_services/rosservice.hpp>
 #include <rtt_ros2_topics/rostopic.hpp>
 #include <rtt_ros2_params/rosparam.hpp>
 #include <std_msgs/typekit/Types.hpp>
@@ -22,7 +22,7 @@ class pongComp : public RTT::TaskContext
     void stopHook();
     void cleanupHook();
 
-    bool connect_to_topics_; //ROS Topic connection guard
+    // bool connect_to_topics_; //ROS Topic connection guard
 
     float hit_chance_;
     // int input_port_value_;

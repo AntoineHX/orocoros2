@@ -4,11 +4,11 @@ namespace orocoros2
 {
 refereeComp::refereeComp(const std::string& name)
   : TaskContext(name)
-  , connect_to_topics_(false)
+  // , connect_to_topics_(false)
   , current_score_(0)
 {
 
-    this->addProperty("connect_to_topics", connect_to_topics_).doc("ROS Topic connection guard");
+    // this->addProperty("connect_to_topics", connect_to_topics_).doc("ROS Topic connection guard");
     this->addProperty("current_score", current_score_).doc("Current score");
 
     //Orocos ports
@@ -43,34 +43,34 @@ bool refereeComp::configureHook()
   boost::shared_ptr<rtt_ros2_params::RosParam> rosparam = this->getProvider<rtt_ros2_params::RosParam>("rosparam");
   if (rosparam and rosparam->ready())
   {
-      if (not rosparam->loadProperty("connect_to_topics", "connect_to_topics"))
-      {
-          std::cout << "refereeComp [" << getName() << "]: failed to update rosparam [connect_to_topics]" << std::endl;
-      }
+      // if (not rosparam->loadProperty("connect_to_topics", "connect_to_topics"))
+      // {
+      //     std::cout << "refereeComp [" << getName() << "]: failed to update rosparam [connect_to_topics]" << std::endl;
+      // }
       if (not rosparam->storeProperty("current_score", "current_score"))  // set() here to initialize rosparam value
       {
           std::cout << "refereeComp [" << getName() << "]: failed to update rosparam [current_score]" << std::endl;
       }
   }   
   //ROS Topics
-  if (connect_to_topics_)
-  {
-      if (not score_port_.createStream(rtt_ros2_topics::topic("/" + getName() + "/score_port")))
-      {
-          std::cout << "refereeComp [" << getName() << "]: failed to connect to ROS topic [~/score_port]" << std::endl;
-          success = false;
-      }
-  }
+  // if (connect_to_topics_)
+  // {
+  //     if (not score_port_.createStream(rtt_ros2_topics::topic("/" + getName() + "/score_port")))
+  //     {
+  //         std::cout << "refereeComp [" << getName() << "]: failed to connect to ROS topic [~/score_port]" << std::endl;
+  //         success = false;
+  //     }
+  // }
   //ROS Services
-  boost::shared_ptr<rtt_ros2_services::RosService> rosservice = this->getProvider<rtt_ros2_services::RosService>("rosservice");
-  if (rosservice and rosservice->ready())
-  {
-      if (not rosservice->connect("referee_service.start_match", "/" + getName() + "/start_match", "oe_msgs/srv/Operation"))
-      {
-          std::cout << "refereeComp [" << getName() << "]: failed to connect to ROS service [~/start_match]" << std::endl;
-          success = false;
-      }
-  }
+  // boost::shared_ptr<rtt_ros2_services::RosService> rosservice = this->getProvider<rtt_ros2_services::RosService>("rosservice");
+  // if (rosservice and rosservice->ready())
+  // {
+  //     if (not rosservice->connect("referee_service.start_match", "/" + getName() + "/start_match", "oe_msgs/srv/Operation"))
+  //     {
+  //         std::cout << "refereeComp [" << getName() << "]: failed to connect to ROS service [~/start_match]" << std::endl;
+  //         success = false;
+  //     }
+  // }
 
   std::cout << "refereeComp [" << getName() << "]: configured" << std::endl;
   return success;

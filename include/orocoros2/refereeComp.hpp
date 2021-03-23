@@ -30,7 +30,7 @@ class refereeComp : public RTT::TaskContext
     void op_callback(oe_msgs::srv::Operation::Request&, oe_msgs::srv::Operation::Response&);
 
 
-    bool connect_to_topics_; //ROS Topic connection guard
+    // bool connect_to_topics_; //ROS Topic connection guard
 
     int current_score_;
 

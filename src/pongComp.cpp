@@ -4,12 +4,12 @@ namespace orocoros2
 {
 pongComp::pongComp(const std::string& name)
   : TaskContext(name)
-  , connect_to_topics_(false)
+  // , connect_to_topics_(false)
   , hit_chance_(0.5)
   // , input_port_value_(0)
 {
 
-  this->addProperty("connect_to_topics", connect_to_topics_).doc("ROS Topic connection guard");
+  // this->addProperty("connect_to_topics", connect_to_topics_).doc("ROS Topic connection guard");
   this->addProperty("hit_chance", hit_chance_).doc("Hit Chance");
   // this->addProperty("input_port_value", input_port_value_).doc("Latest value processed on pongComp Input Port");
 
@@ -36,24 +36,24 @@ bool pongComp::configureHook()
   boost::shared_ptr<rtt_ros2_params::RosParam> rosparam = this->getProvider<rtt_ros2_params::RosParam>("rosparam");
   if (rosparam and rosparam->ready())
   {
-    if (not rosparam->loadProperty("connect_to_topics", "connect_to_topics"))
-    {
-        std::cout << "pongComp [" << getName() << "]: failed to update rosparam [connect_to_topics]" << std::endl;
-    }
+    // if (not rosparam->loadProperty("connect_to_topics", "connect_to_topics"))
+    // {
+    //     std::cout << "pongComp [" << getName() << "]: failed to update rosparam [connect_to_topics]" << std::endl;
+    // }
     if (not rosparam->storeProperty("hit_chance", "hit_chance"))  // set() here to initialize rosparam value
     {
         std::cout << "pongComp [" << getName() << "]: failed to update rosparam [hit_chance]" << std::endl;
     }
   }
   //ROS Topics
-  if (connect_to_topics_)
-  {
-    if (not player_action_port_.createStream(rtt_ros2_topics::topic("/" + getName() + "/player_action_port")))
-    {
-        std::cout << "pongComp [" << getName() << "]: failed to connect to ROS topic [~/player_action_port]" << std::endl;
-        success = false;
-    }
-  }
+  // if (connect_to_topics_)
+  // {
+  //   if (not player_action_port_.createStream(rtt_ros2_topics::topic("/" + getName() + "/player_action_port")))
+  //   {
+  //       std::cout << "pongComp [" << getName() << "]: failed to connect to ROS topic [~/player_action_port]" << std::endl;
+  //       success = false;
+  //   }
+  // }
   std::cout << "pongComp [" << getName() << "]: configured" << std::endl;
   return success;
 }

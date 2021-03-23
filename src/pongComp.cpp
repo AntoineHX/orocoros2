@@ -5,7 +5,7 @@ namespace orocoros2
 pongComp::pongComp(const std::string& name)
   : TaskContext(name)
   // , connect_to_topics_(false)
-  , hit_chance_(0.5)
+  , hit_chance_(0.8)
   // , input_port_value_(0)
 {
 
@@ -92,11 +92,15 @@ void pongComp::updateHook()
   if(new_data && incoming_ball)
   {
     if(rand()%100<hit_chance_*100)
+    {
       action.data = 1; //Hit
+      std::cout << "pongComp [" << getName() << "]: Hit !" << std::endl;
+    }
     else
     {
       miss = true;
       action.data = 2; //Miss
+      std::cout << "pongComp [" << getName() << "]: Missed ..." << std::endl;
     }
   }
 

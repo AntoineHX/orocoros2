@@ -8,6 +8,8 @@
 #include <rtt_ros2_params/rosparam.hpp>
 #include <std_msgs/typekit/Types.hpp>
 #include <orocoros2_msgs/srv/player_service.hpp>
+#include <orocoros2_msgs/msg/score.hpp>
+#include <array> 
 
 namespace orocoros2
 {
@@ -32,14 +34,14 @@ class refereeComp : public RTT::TaskContext
 
     // bool connect_to_topics_; //ROS Topic connection guard
 
-    int current_score_;
+    std::array<int, 2> current_score_;
 
     // These ports are `int` ports, and will automatically map to `std_msgs/Int32` when connected to a ROS topic
     RTT::InputPort<bool> player1_miss_port_;
     RTT::InputPort<bool> player2_miss_port_;
     RTT::OutputPort<bool> player1_start_port_;
     RTT::OutputPort<bool> player2_start_port_;
-    RTT::OutputPort<std_msgs::msg::Int32> score_port_;
+    RTT::OutputPort<orocoros2_msgs::msg::Score> score_port_;
 
 };
 }  // namespace orocoros2

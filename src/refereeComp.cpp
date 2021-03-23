@@ -5,27 +5,27 @@ namespace orocoros2
 refereeComp::refereeComp(const std::string& name)
   : TaskContext(name)
   // , connect_to_topics_(false)
-  , current_score_(0)
+  , current_score_ {0,0}
 {
 
-    // this->addProperty("connect_to_topics", connect_to_topics_).doc("ROS Topic connection guard");
-    this->addProperty("current_score", current_score_).doc("Current score");
+  // this->addProperty("connect_to_topics", connect_to_topics_).doc("ROS Topic connection guard");
+  this->addProperty("current_score", current_score_).doc("Current score");
 
-    //Orocos ports
-    this->ports()->addPort("player1_miss_port", player1_miss_port_).doc("refereeComp Input Port");
-    this->ports()->addPort("player2_miss_port", player2_miss_port_).doc("refereeComp Input Port");
-    this->ports()->addPort("player1_start_port", player1_start_port_).doc("refereeComp Output Port");
-    this->ports()->addPort("player2_start_port", player2_start_port_).doc("refereeComp Output Port");
+  //Orocos ports
+  this->ports()->addPort("player1_miss_port", player1_miss_port_).doc("refereeComp Input Port");
+  this->ports()->addPort("player2_miss_port", player2_miss_port_).doc("refereeComp Input Port");
+  this->ports()->addPort("player1_start_port", player1_start_port_).doc("refereeComp Output Port");
+  this->ports()->addPort("player2_start_port", player2_start_port_).doc("refereeComp Output Port");
 
-    //ROS ports
-    this->ports()->addPort("score_port", score_port_).doc("refereeComp ROS Output Port");
+  //ROS ports
+  this->ports()->addPort("score_port", score_port_).doc("refereeComp ROS Output Port");
 
-    //ROS Service
-    this->provides("referee_service")
-        ->addOperation("start_match", &refereeComp::op_callback, this, RTT::ClientThread)
-        .arg("request", "An integer input.")
-        .arg("response", "An bool output.")
-        .doc("Launch a new ball to a player with ROS Messages");
+  //ROS Service
+  this->provides("referee_service")
+      ->addOperation("start_match", &refereeComp::op_callback, this, RTT::ClientThread)
+      .arg("request", "An integer input.")
+      .arg("response", "An bool output.")
+      .doc("Launch a new ball to a player with ROS Messages");
 
   std::cout << "refereeComp [" << getName() << "]: constructed" << std::endl;
 }
@@ -98,15 +98,15 @@ void refereeComp::updateHook()
   if(new_data)
   {
     if(input_player1)
-      current_score_-=1;
+      current_score_[0]+=1;
     if(input_player2)
-      current_score_+=1;
+      current_score_[1]+=1;
   }
 
   // Process Outputs
   //ROS ports
-  std_msgs::msg::Int32 score_msg;
-  score_msg.data = current_score_; 
+  orocoros2_msgs::msg::Score score_msg;
+  score_msg.score = current_score_;
   if (not score_port_.write(score_msg) == RTT::WriteStatus::WriteSuccess)
   {
       std::cerr << "refereeComp [" << getName() << "]: score_port failed to write" << std::endl;

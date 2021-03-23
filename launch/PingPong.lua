@@ -98,7 +98,7 @@ dep:stream( pong_referee:getName()..".score_port", rtt.provides("ros"):topic(ros
 dep:stream( pong_player1:getName()..".player_action_port", rtt.provides("ros"):topic(ros_namespace.."/"..pong_player1:getName().."_action", false))
 dep:stream( pong_player2:getName()..".player_action_port", rtt.provides("ros"):topic(ros_namespace.."/"..pong_player2:getName().."_action", false))
 -- Connect ROS Services --
-pong_referee:provides("rosservice"):connect("referee_service.start_match", ros_namespace.."/start_match", "oe_msgs/srv/Operation")
+pong_referee:provides("rosservice"):connect("referee_service.start_match", ros_namespace.."/start_match", "orocoros2_msgs/srv/PlayerService")
 -- ---------------- --
 -- Start components --
 -- ---------------- --

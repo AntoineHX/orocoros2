@@ -7,7 +7,7 @@
 #include <rtt_ros2_topics/rostopic.hpp>
 #include <rtt_ros2_params/rosparam.hpp>
 #include <std_msgs/typekit/Types.hpp>
-#include <oe_msgs/srv/operation.hpp>
+#include <orocoros2_msgs/srv/player_service.hpp>
 
 namespace orocoros2
 {
@@ -27,7 +27,7 @@ class refereeComp : public RTT::TaskContext
     // Operations and OperationCallers that are tied to ROS services must share the same callback function definition as ROS services, though
     // (but with non-const reference arguments, no shared pointers).
     // RTT::OperationCaller<void(oe_msgs::srv::Operation::Request&, oe_msgs::srv::Operation::Response&)> op_caller_;
-    void op_callback(oe_msgs::srv::Operation::Request&, oe_msgs::srv::Operation::Response&);
+    void op_callback(orocoros2_msgs::srv::PlayerService::Request&, orocoros2_msgs::srv::PlayerService::Response&);
 
 
     // bool connect_to_topics_; //ROS Topic connection guard

@@ -126,22 +126,22 @@ void refereeComp::cleanupHook()
 }
 
 //Better to write on port in Update loop ?
-void refereeComp::op_callback(oe_msgs::srv::Operation::Request& request, oe_msgs::srv::Operation::Response& response)
+void refereeComp::op_callback(orocoros2_msgs::srv::PlayerService::Request& request, orocoros2_msgs::srv::PlayerService::Response& response)
 {
   bool success=true;
-  if (request.value.data == 1 && not player1_start_port_.write(true) == RTT::WriteStatus::WriteSuccess)
+  if (request.player == request.PLAYER1 && not player1_start_port_.write(true) == RTT::WriteStatus::WriteSuccess)
   {
       std::cerr << "refereeComp [" << getName() << "]: player1_start_port failed to write" << std::endl;
       success=false;
   } 
-  if (request.value.data == 2 && not player2_start_port_.write(true) == RTT::WriteStatus::WriteSuccess)
+  if (request.player== request.PLAYER2 && not player2_start_port_.write(true) == RTT::WriteStatus::WriteSuccess)
   {
       std::cerr << "refereeComp [" << getName() << "]: player2_start_port failed to write" << std::endl;
       success=false;
   } 
   
-  response.value.data = success;
-  std::cout << "refereeComp [" << getName() << "]: start_match operation executed (success:"<< success <<") with argument = " << request.value.data << std::endl;
+  response.success = success;
+  std::cout << "refereeComp [" << getName() << "]: start_match operation executed (success:"<< success <<") with argument = " << request.player << std::endl;
 }
 
 }  // namespace orocoros2

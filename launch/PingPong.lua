@@ -27,7 +27,7 @@ rtt.provides("ros"):import("orocoros2")
 ros_application_name = "PingPong"
 app_period = 1.0
 connect_to_topics = true
-rtt.provides("ros"):create_named_node(ros_application_name)
+rtt.provides("ros"):create_named_node_with_namespace("Main_node",ros_application_name)
 -- connect_to_topics = rtt.Variable("rclcpp.ParameterValue",true)
 -- print(connect_to_topics)
 -- rtt.provides("ros"):provides("rosparam"):setParameter("connect_to_topics", connect_to_topics)
@@ -36,12 +36,11 @@ rtt.provides("ros"):create_named_node(ros_application_name)
 -- Create components --
 -- ----------------- --
 -- Referee
-node_name=ros_application_name.."_Referee" --Concatenate names
--- rtt.provides("ros"):create_named_node(node_name)
-dep:loadComponent(node_name,"orocoros2::refereeComp")
-pong_referee = dep:getPeer(node_name)
+comp_name="Referee"
+dep:loadComponent(comp_name,"orocoros2::refereeComp")
+pong_referee = dep:getPeer(comp_name)
 pong_referee:addPeer(dep)
-dep:setActivity(node_name,app_period,1,1)
+dep:setActivity(comp_name,app_period,1,1)
 pong_referee:loadService("rosparam")
 pong_referee:loadService("rosservice")
 
@@ -49,24 +48,22 @@ pong_referee:loadService("rosservice")
 -- ctt_prop:set(connect_to_topics)
 
 -- Player1
-node_name=ros_application_name.."_Player1"
--- rtt.provides("ros"):create_named_node(node_name)
-dep:loadComponent(node_name,"orocoros2::pongComp")
-pong_player1 = dep:getPeer(node_name)
+comp_name="Player1"
+dep:loadComponent(comp_name,"orocoros2::pongComp")
+pong_player1 = dep:getPeer(comp_name)
 pong_player1:addPeer(dep)
-dep:setActivity(node_name,app_period,1,1)
+dep:setActivity(comp_name,app_period,1,1)
 pong_player1:loadService("rosparam")
 
 -- ctt_prop=pong_player1:getProperty("connect_to_topics")
 -- ctt_prop:set(connect_to_topics)
 
 -- Player2
-node_name=ros_application_name.."_Player2"
--- rtt.provides("ros"):create_named_node(node_name)
-dep:loadComponent(node_name,"orocoros2::pongComp")
-pong_player2 = dep:getPeer(node_name)
+comp_name="Player2"
+dep:loadComponent(comp_name,"orocoros2::pongComp")
+pong_player2 = dep:getPeer(comp_name)
 pong_player2:addPeer(dep)
-dep:setActivity(node_name,app_period,1,1)
+dep:setActivity(comp_name,app_period,1,1)
 pong_player2:loadService("rosparam")
 
 -- ctt_prop=pong_player2:getProperty("connect_to_topics")
@@ -96,11 +93,12 @@ dep:connect( pong_player2:getName()..".miss_ball_port", pong_referee:getName()..
 dep:connect( pong_player1:getName()..".return_ball_port", pong_player2:getName()..".incoming_ball_port", cp )
 dep:connect( pong_player2:getName()..".return_ball_port", pong_player1:getName()..".incoming_ball_port", cp )
 -- set the ROS port connections --
-dep:stream( pong_referee:getName()..".score_port", rtt.provides("ros"):topic("/score_port", false))
-dep:stream( pong_player1:getName()..".player_action_port", rtt.provides("ros"):topic("/"..pong_player1:getName().."/player_action_port", false))
-dep:stream( pong_player2:getName()..".player_action_port", rtt.provides("ros"):topic("/"..pong_player2:getName().."/player_action_port", false))
+ros_namespace ="/"..ros_application_name --Concatenate strings
+dep:stream( pong_referee:getName()..".score_port", rtt.provides("ros"):topic(ros_namespace.."/score_port", false))
+dep:stream( pong_player1:getName()..".player_action_port", rtt.provides("ros"):topic(ros_namespace.."/"..pong_player1:getName().."_action", false))
+dep:stream( pong_player2:getName()..".player_action_port", rtt.provides("ros"):topic(ros_namespace.."/"..pong_player2:getName().."_action", false))
 -- Connect ROS Services --
-pong_referee:provides("rosservice"):connect("referee_service.start_match", "/start_match", "oe_msgs/srv/Operation")
+pong_referee:provides("rosservice"):connect("referee_service.start_match", ros_namespace.."/start_match", "oe_msgs/srv/Operation")
 -- ---------------- --
 -- Start components --
 -- ---------------- --

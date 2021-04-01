@@ -115,10 +115,52 @@ It'll disable hyperthreading and isolate a cpu (isolcpus=<cpuID>) for RT process
 ---
 ### [ROS2-Foxy (Ubuntu Focal) setup](https://docs.ros.org/en/foxy/Installation/Linux-Install-Debians.html#)
 
-#Set locale
+#### Set locale :
 ```
 locale  # check for UTF-8
+
+sudo apt update && sudo apt install locales
+sudo locale-gen en_US en_US.UTF-8
+sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+locale  # verify settings
 ```
+#### Setup sources :
+```
+sudo apt update && sudo apt install curl gnupg2 lsb-release
+curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+
+sudo sh -c 'echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list'
+```
+#### Install ROS2 :
+```
+sudo apt update
+sudo apt install ros-foxy-desktop
+```
+##### Complete colcon installation :
+```
+sudo apt install python3-colcon-common-extensions
+```
+##### (Optional) Install argcomplete :
+```
+sudo apt install -y python3-argcomplete
+```
+##### (Optional) Edit your shell startup script :
+ROS2 : 
+```
+echo "source /opt/ros/foxy/setup.bash" >> ~/.bashrc
+```
+Colcon_cd :
+```
+echo "source /usr/share/colcon_cd/function/colcon_cd.sh" >> ~/.bashrc
+echo "export _colcon_cd_root=~/ros2_install" >> ~/.bashrc
+```
+ROS_DOMAIN_ID. Replace <your_domain_id> by an integer between 0-232.
+```
+echo "export ROS_DOMAIN_ID=<your_domain_id>" >> ~/.bashrc
+```
+
 ---
 OrocoRos2 install :
 

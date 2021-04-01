@@ -11,7 +11,6 @@ find_package(rtt_ros2 REQUIRED)
 find_package(rtt_ros2_params REQUIRED)
 find_package(rtt_ros2_node REQUIRED) # Required ?
 find_package(rtt_ros2_std_msgs REQUIRED)
-find_package(rtt_ros2_oe_msgs REQUIRED)
 find_package(rtt_ros2_orocoros2_msgs REQUIRED)
 
 orocos_use_package(ocl-deployment REQUIRED)

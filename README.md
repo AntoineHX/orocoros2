@@ -5,7 +5,7 @@
    1. [Real-Time kernel setup](#real-time-kernel-setup)
    2. [ROS2-Foxy (Ubuntu Focal) setup](#ros-setup)
    3. [OROCOS 2.9 + ROS2 integration setup](#orocos-ros-setup)
-- [OrocoRos2](#orocoros2)
+- [OrocoRos2](#orocoros2-repo)
 - [Other Orocos+ROS2 ressources](#other-ressources)
 
 ---
@@ -236,7 +236,7 @@ echo "source ~/orocos/foxy/local_setup.bash" >> ~/.bashrc
 ```
 ---
 ---
-## OrocoRos2 
+## OrocoRos2 <a name="orocoros2-repo"></a>
 ### Install
 
 ```

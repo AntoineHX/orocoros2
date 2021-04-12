@@ -269,6 +269,10 @@ source ~/dev_ws/install/local_setup.bash
 cd ~/dev_ws/src/orocoros2/launch
 deployer PingPong.ops
 ```
+You should get a usable Orocos deployer after the pong components are started. Terminal #1 will also display the messages printed by the pong components.
+
+NOTE: To close the deployer, use `<Ctrl + D>`
+
 - On Terminal #2, Start match (replace `<Player>` by 1 or 2, to choose the first player to hit the ball) :
 
 ```
@@ -278,9 +282,18 @@ source ~/dev_ws/install/local_setup.bash
 
 ros2 service call /PingPong/start_match orocoros2_msgs/srv/PlayerService "{player: <Player>}"
 ```
-NOTE: To close the deployer, use `<Ctrl + D>`
 
+- On Terminal #2, you can also tune hit chances of each player (replace `<hit_chance>` by a double between [0.0,1.0]):
+```
+ros2 param set /PingPong/Main_node Player1_hit_chance <hit_chance>
+ros2 param set /PingPong/Main_node Player1_hit_chance <hit_chance>
+```
 
+- On Terminal #2, you can get the current scores published by the referee :
+```
+ros2 topic echo /PingPong/score_port
+```
+NOTE: To stop the previous command, use `<Ctrl + C>`
 
 ## Other Orocos+ROS2 ressources <a name="other-ressources"></a>
 - Another simple example : https://gitlab.com/AntoineHX/orocos_examples

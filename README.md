@@ -1,18 +1,21 @@
 # OrocoRos2
+This package intends to provide examples on how to use OROCOS along with ROS2
+
+This README contains an installation procedure for Ubuntu 20.04 **only**, to set up OROCOS 2.9, ROS 2 Foxy, and our example package
 
 ## Table of Contents
 - [Environment setup](#environment-setup)
-   1. [Real-Time kernel setup](#real-time-kernel-setup)
-   2. [ROS2-Foxy (Ubuntu Focal) setup](#ros-setup)
+   1. [Real-Time kernel setup (optional)](#real-time-kernel-setup)
+   2. [ROS2-Foxy (Ubuntu 20.04) setup](#ros-setup)
    3. [OROCOS 2.9 + ROS2 integration setup](#orocos-ros-setup)
 - [OrocoRos2](#orocoros2-repo)
 - [Other Orocos+ROS2 ressources](#other-ressources)
 
 ---
 ## Environment setup
-### [Real-Time kernel setup](https://frankaemika.github.io/docs/installation_linux.html#setting-up-the-real-time-kernel)
+### [Real-Time kernel setup (optional)](https://frankaemika.github.io/docs/installation_linux.html#setting-up-the-real-time-kernel)
 
-This step is optional for this repository.
+This step is optional for this repository, but **required if you need hard real-time capabilities**.
 
 **WARNING**: You need to have at least 32GB free on your disk.
 
@@ -24,7 +27,7 @@ cd ~/rt_kernel
 #### Pre-requirements
 Dependencies :
 ```
-apt-get install build-essential bc curl ca-certificates fakeroot gnupg2 libssl-dev lsb-release libelf-dev bison flex
+sudo apt install build-essential bc curl ca-certificates fakeroot gnupg2 libssl-dev lsb-release libelf-dev bison flex
 ```
 Choose the closest kernel version from [https://www.kernel.org/pub/linux/kernel/projects/rt/](https://www.kernel.org/pub/linux/kernel/projects/rt/) by running : ``` uname -r ```. For example if your kernel version is *"5.8.0-48-generic"*, you should choose *"5.6.19-rt12"*.
 
@@ -69,6 +72,7 @@ make oldconfig
 When asked for the Preemption Model, choose the Fully Preemptible Kernel. You can pick the other options at their default values (Just press enter).
 
 ##### Compile kernel
+Replace `<parallel-workers>` by the number of threads available on your computer. 
 ```
 fakeroot sudo make -j<parallel-workers> deb-pkg
 ```
@@ -117,11 +121,11 @@ The limits will be applied after you log out and in again.
 sudo apt install grub-customizer
 grub-customizer
 ```
-Create a new boot sequence, copy the boot sequence from the RT kernel and add the following to the "linux" line after "quiet splash" : ``` nosmt noefi intel_idle.max_cstate=1 pstate_driver=no_hwp clocksource=tsc tsc=reliable rcu_nocb_poll rcu_nocbs=3 nohz_full=3 nmi_watchdog=0 nosoftlockup nosmap audit=0 irqaffinity=0-2 isolcpus=5 ```
-It'll disable hyperthreading and isolate a cpu (isolcpus=<cpuID>) for RT processes.
+Modify the boot sequence of the RT kernel by adding the following to the "linux" line after "quiet splash" : ``` nosmt noefi intel_idle.max_cstate=1 pstate_driver=no_hwp clocksource=tsc tsc=reliable rcu_nocb_poll rcu_nocbs=3 nohz_full=3 nmi_watchdog=0 nosoftlockup nosmap audit=0 irqaffinity=0-2 isolcpus=5 ```
+Essentially, it'll disable hyperthreading and isolate a cpu (isolcpus=<cpuID>) for RT processes.
     
 ---
-### [ROS2-Foxy (Ubuntu Focal) setup](https://docs.ros.org/en/foxy/Installation/Linux-Install-Debians.html#) <a name="ros-setup"></a>
+### [ROS2-Foxy (Ubuntu 20.04) setup](https://docs.ros.org/en/foxy/Installation/Linux-Install-Debians.html#) <a name="ros-setup"></a>
 
 #### Set locale
 ```
@@ -170,7 +174,7 @@ echo "export ROS_DOMAIN_ID=<your_domain_id>" >> ~/.bashrc
 ```
 ---
 ### OROCOS 2.9 + ROS2 integration setup <a name="orocos-ros-setup"></a>
-#### Pre-reuirements
+#### Pre-requirements
 ```
 sudo apt-get install liblua5.1-0-dev
 sudo apt install -y git ros-foxy-ament-cmake-clang-format omniorb omniidl omniorb-idl omniorb-nameserver libomniorb4-dev
@@ -251,22 +255,29 @@ colcon build
 ```
 ### Usage
 
-- Start pong components :
+- On Terminal #1, Start pong components :
 ```
 source ~/dev_ws/install/local_setup.bash
 cd ~/dev_ws/src/orocoros2/launch
 deployer PingPong.ops
 ```
-- Start match (Replace <Player> by 1 or 2, to choose the first player to hit the ball) :
+- On Terminal #2, Start match (replace `<Player>` by 1 or 2, to choose the first player to hit the ball) :
 
 ```
 ros2 service call /PingPong/start_match orocoros2_msgs/srv/PlayerService "{player: <Player>}"
 ```
+NOTE: To close the deployer, use `<Ctrl + D>`
+
 ## Other Orocos+ROS2 ressources <a name="other-ressources"></a>
-- Antoher simple example : https://gitlab.com/AntoineHX/orocos_examples
+- Another simple example : https://gitlab.com/AntoineHX/orocos_examples
 - OROCOS+ROS courses : https://atlas-itn.eu/training/network-training-activities/nta-3-best-integration-practices-and-robotic-middleware/
 
 ---
 ---
 ## Contributions
 Contributions from Antoine Harlé (<harle@isir.upmc.fr>), Jimmy Da Silva (<jimmy.dasilva@isir.upmc.fr>), Kenan Niu (<kenan.niu@kuleuven.be>), Sergio Portoles Diez (<sergio.portoles.diez@intermodalics.eu>).
+
+The current installation procedure and code is adapted from:
+- libfranka real-time setup: https://frankaemika.github.io/docs/installation_linux.html#setting-up-the-real-time-kernel
+- ROS2 documentation: https://docs.ros.org/en/foxy/Installation.html
+- OROCOS+ROS examples: https://gitlab.com/dustingooding/orocos_examples/-/tree/feature/ros2

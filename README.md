@@ -5,7 +5,7 @@ This README contains an installation procedure for Ubuntu 20.04 **only**, to set
 
 ## Table of Contents
 - [Environment setup](#environment-setup)
-   1. [Real-Time kernel setup (optional)](#real-time-kernel-setup)
+   1. [Real-Time kernel setup (**optional**)](#real-time-kernel-setup)
    2. [ROS2-Foxy (Ubuntu 20.04) setup](#ros-setup)
    3. [OROCOS 2.9 + ROS2 integration setup](#orocos-ros-setup)
 - [OrocoRos2](#orocoros2-repo)
@@ -13,9 +13,10 @@ This README contains an installation procedure for Ubuntu 20.04 **only**, to set
 
 ---
 ## Environment setup
-### [Real-Time kernel setup (optional)](https://frankaemika.github.io/docs/installation_linux.html#setting-up-the-real-time-kernel)
 
-This step is optional for this repository, but **required if you need hard real-time capabilities**.
+### [Real-Time kernel setup](https://frankaemika.github.io/docs/installation_linux.html#setting-up-the-real-time-kernel)<a name="real-time-kernel-setup"></a>
+
+This step is **optional** for this repository, but **required if you need hard real-time capabilities**.
 
 **WARNING**: You need to have at least 32GB free on your disk.
 
@@ -115,15 +116,15 @@ Add the following to *"/etc/security/limits.conf"* (```sudo gedit /etc/security/
 @realtime hard memlock 102400
 ```
 The limits will be applied after you log out and in again.
-
-##### (CHECK IF OKAY) (Optional) Customize boot options
+<!--
+##### (Optional) Customize boot options
 ```
 sudo apt install grub-customizer
 grub-customizer
 ```
 Modify the boot sequence of the RT kernel by adding the following to the "linux" line after "quiet splash" : ``` nosmt noefi intel_idle.max_cstate=1 pstate_driver=no_hwp clocksource=tsc tsc=reliable rcu_nocb_poll rcu_nocbs=3 nohz_full=3 nmi_watchdog=0 nosoftlockup nosmap audit=0 irqaffinity=0-2 isolcpus=5 ```
 Essentially, it'll disable hyperthreading and isolate a cpu (isolcpus=<cpuID>) for RT processes.
-    
+-->
 ---
 ### [ROS2-Foxy (Ubuntu 20.04) setup](https://docs.ros.org/en/foxy/Installation/Linux-Install-Debians.html#) <a name="ros-setup"></a>
 
@@ -227,6 +228,7 @@ sudo apt install ros-foxy-test-msgs
 And run the previous *colcon build* command with ```-DBUILD_TESTING=ON``` option.
 #### Verfify installation
 ```
+source /opt/ros/foxy/setup.bash
 source ~/orocos/foxy/local_setup.bash
 deployer
 import("rtt_ros2")
@@ -241,6 +243,9 @@ echo "source ~/orocos/foxy/local_setup.bash" >> ~/.bashrc
 ---
 ---
 ## OrocoRos2 <a name="orocoros2-repo"></a>
+
+OrocoRos2 shows a basic use of the ROS2 publisher/suscriber and services capabilities in Orocos.
+
 ### Install
 
 ```
@@ -248,7 +253,7 @@ mkdir -p ~/dev_ws/src
 cd ~/dev_ws/src
 git clone https://github.com/AntoineHX/orocoros2_msgs.git
 git clone https://github.com/AntoineHX/rtt_ros2_orocoros2_msgs
-git clone https://github.com/AntoineHX/OrocoRos2.git
+git clone https://github.com/AntoineHX/orocoros2.git
 
 cd ~/dev_ws
 colcon build
@@ -257,16 +262,25 @@ colcon build
 
 - On Terminal #1, Start pong components :
 ```
+source /opt/ros/foxy/setup.bash
+source ~/orocos/foxy/local_setup.bash
 source ~/dev_ws/install/local_setup.bash
+
 cd ~/dev_ws/src/orocoros2/launch
 deployer PingPong.ops
 ```
 - On Terminal #2, Start match (replace `<Player>` by 1 or 2, to choose the first player to hit the ball) :
 
 ```
+source /opt/ros/foxy/setup.bash
+source ~/orocos/foxy/local_setup.bash
+source ~/dev_ws/install/local_setup.bash
+
 ros2 service call /PingPong/start_match orocoros2_msgs/srv/PlayerService "{player: <Player>}"
 ```
 NOTE: To close the deployer, use `<Ctrl + D>`
+
+
 
 ## Other Orocos+ROS2 ressources <a name="other-ressources"></a>
 - Another simple example : https://gitlab.com/AntoineHX/orocos_examples
@@ -278,6 +292,6 @@ NOTE: To close the deployer, use `<Ctrl + D>`
 Contributions from Antoine Harlé (<harle@isir.upmc.fr>), Jimmy Da Silva (<jimmy.dasilva@isir.upmc.fr>), Kenan Niu (<kenan.niu@kuleuven.be>), Sergio Portoles Diez (<sergio.portoles.diez@intermodalics.eu>).
 
 The current installation procedure and code is adapted from:
-- libfranka real-time setup: https://frankaemika.github.io/docs/installation_linux.html#setting-up-the-real-time-kernel
-- ROS2 documentation: https://docs.ros.org/en/foxy/Installation.html
-- OROCOS+ROS examples: https://gitlab.com/dustingooding/orocos_examples/-/tree/feature/ros2
+- libfranka real-time setup : https://frankaemika.github.io/docs/installation_linux.html#setting-up-the-real-time-kernel
+- ROS2 documentation : https://docs.ros.org/en/foxy/Installation.html
+- OROCOS+ROS examples : https://gitlab.com/dustingooding/orocos_examples/-/tree/feature/ros2

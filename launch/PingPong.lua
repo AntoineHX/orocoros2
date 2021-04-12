@@ -25,7 +25,10 @@ rtt.provides("ros"):import("orocoros2")
 -- Important global settings --
 -- ------------------------- --
 ros_application_name = "PingPong"
-app_period = 1.0
+
+app_period = 0.0001
+priority = 99 --RT=99
+
 connect_to_topics = true
 rtt.provides("ros"):create_named_node_with_namespace("Main_node",ros_application_name)
 -- connect_to_topics = rtt.Variable("rclcpp.ParameterValue",true)
@@ -40,7 +43,7 @@ comp_name="Referee"
 dep:loadComponent(comp_name,"orocoros2::refereeComp")
 pong_referee = dep:getPeer(comp_name)
 pong_referee:addPeer(dep)
-dep:setActivity(comp_name,app_period,1,1)
+dep:setActivity(comp_name,app_period,priority,rtt.globals.ORO_SCHED_RT)
 pong_referee:loadService("rosparam")
 pong_referee:loadService("rosservice")
 
@@ -52,7 +55,7 @@ comp_name="Player1"
 dep:loadComponent(comp_name,"orocoros2::pongComp")
 pong_player1 = dep:getPeer(comp_name)
 pong_player1:addPeer(dep)
-dep:setActivity(comp_name,app_period,1,1)
+dep:setActivity(comp_name,app_period,priority,rtt.globals.ORO_SCHED_RT)
 pong_player1:loadService("rosparam")
 
 -- ctt_prop=pong_player1:getProperty("connect_to_topics")
@@ -63,7 +66,7 @@ comp_name="Player2"
 dep:loadComponent(comp_name,"orocoros2::pongComp")
 pong_player2 = dep:getPeer(comp_name)
 pong_player2:addPeer(dep)
-dep:setActivity(comp_name,app_period,1,1)
+dep:setActivity(comp_name,app_period,priority,rtt.globals.ORO_SCHED_RT)
 pong_player2:loadService("rosparam")
 
 -- ctt_prop=pong_player2:getProperty("connect_to_topics")
@@ -102,6 +105,10 @@ pong_referee:provides("rosservice"):connect("referee_service.start_match", ros_n
 -- ---------------- --
 -- Start components --
 -- ---------------- --
+pong_referee:setCpuAffinity(5)
+pong_player1:setCpuAffinity(5)
+pong_player2:setCpuAffinity(5)
+
 pong_referee:start()
 pong_player1:start()
 pong_player2:start()

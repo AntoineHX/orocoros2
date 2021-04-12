@@ -91,16 +91,17 @@ void pongComp::updateHook()
   bool miss=false;
   if(new_data && incoming_ball)
   {
-    if(rand()%100<hit_chance_*100)
+    int rand_value = rand()%100;
+    if(rand_value<hit_chance_*100)
     {
       action.data = 1; //Hit
-      std::cout << "pongComp [" << getName() << "]: Hit !" << std::endl;
+      std::cout << "pongComp [" << getName() << "]: Hit ! (" <<rand_value<<"/"<<hit_chance_*100<<")"<<std::endl;
     }
     else
     {
       miss = true;
       action.data = 2; //Miss
-      std::cout << "pongComp [" << getName() << "]: Missed ..." << std::endl;
+      std::cout << "pongComp [" << getName() << "]: Missed ... ("<<rand_value<<"/"<<hit_chance_*100<<")"<< std::endl;
     }
   }
 

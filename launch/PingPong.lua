@@ -88,7 +88,7 @@ cp.type = 0 -- type DATA
 -- cp_ros = rtt.Variable('ConnPolicy')
 -- cp_ros.transport = 3   -- transport layer: ROS
 
--- set the OROCOS port connections ################ replace by the name
+-- set the OROCOS port connections --
 dep:connect( pong_referee:getName()..".player1_start_port", pong_player1:getName()..".incoming_ball_port", cp )
 dep:connect( pong_referee:getName()..".player2_start_port", pong_player2:getName()..".incoming_ball_port", cp )
 dep:connect( pong_player1:getName()..".miss_ball_port", pong_referee:getName()..".player1_miss_port", cp )
@@ -97,17 +97,20 @@ dep:connect( pong_player1:getName()..".return_ball_port", pong_player2:getName()
 dep:connect( pong_player2:getName()..".return_ball_port", pong_player1:getName()..".incoming_ball_port", cp )
 -- set the ROS port connections --
 ros_namespace ="/"..ros_application_name --Concatenate strings
+-- Publishers
 dep:stream( pong_referee:getName()..".score_port", rtt.provides("ros"):topic(ros_namespace.."/score_port", false))
 dep:stream( pong_player1:getName()..".player_action_port", rtt.provides("ros"):topic(ros_namespace.."/"..pong_player1:getName().."_action", false))
 dep:stream( pong_player2:getName()..".player_action_port", rtt.provides("ros"):topic(ros_namespace.."/"..pong_player2:getName().."_action", false))
+-- Subscribers
+dep:stream( pong_referee:getName()..".player_watch_port", rtt.provides("ros"):topic(ros_namespace.."/"..pong_player1:getName().."_action", false))
 -- Connect ROS Services --
 pong_referee:provides("rosservice"):connect("referee_service.start_match", ros_namespace.."/start_match", "orocoros2_msgs/srv/PlayerService")
 -- ---------------- --
 -- Start components --
 -- ---------------- --
-pong_referee:setCpuAffinity(5)
-pong_player1:setCpuAffinity(5)
-pong_player2:setCpuAffinity(5)
+-- pong_referee:setCpuAffinity(5)
+-- pong_player1:setCpuAffinity(5)
+-- pong_player2:setCpuAffinity(5)
 
 pong_referee:start()
 pong_player1:start()

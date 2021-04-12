@@ -18,6 +18,7 @@ refereeComp::refereeComp(const std::string& name)
   this->ports()->addPort("player2_start_port", player2_start_port_).doc("refereeComp Output Port");
 
   //ROS ports
+  this->ports()->addPort("player_watch_port", player_watch_port_).doc("refereeComp ROS Input Port");
   this->ports()->addPort("score_port", score_port_).doc("refereeComp ROS Output Port");
 
   //ROS Service
@@ -94,6 +95,14 @@ void refereeComp::updateHook()
   if (player2_miss_port_.read(input_player2) == RTT::FlowStatus::NewData)
     new_data = true;
 
+  //ROS ports
+  std_msgs::msg::Int32 input_temp;
+  int player_watch=-1;
+  if (player_watch_port_.read(input_temp) == RTT::FlowStatus::NewData)
+  {
+      player_watch = input_temp.data;
+  }
+
   // Do Something
   if(new_data)
   {
@@ -102,6 +111,9 @@ void refereeComp::updateHook()
     if(input_player2)
       current_score_[1]+=1;
   }
+
+  if(player_watch==1) //Hit action : 1
+    std::cout << "refereeComp [" << getName() << "]: saw player 1 hit the ball !"<< std::endl;
 
   // Process Outputs
   //ROS ports

@@ -36,11 +36,13 @@ class refereeComp : public RTT::TaskContext
 
     std::array<int, 2> current_score_;
 
-    // These ports are `int` ports, and will automatically map to `std_msgs/Int32` when connected to a ROS topic
+    //Orocos ports
     RTT::InputPort<bool> player1_miss_port_;
     RTT::InputPort<bool> player2_miss_port_;
     RTT::OutputPort<bool> player1_start_port_;
     RTT::OutputPort<bool> player2_start_port_;
+    //ROS ports
+    RTT::InputPort<std_msgs::msg::Int32> player_watch_port_;
     RTT::OutputPort<orocoros2_msgs::msg::Score> score_port_;
 
 };

@@ -1,7 +1,7 @@
 # OrocoRos2
 This package intends to provide examples on how to use OROCOS along with ROS2
 
-This README contains an installation procedure for Ubuntu 20.04 **only**, to set up OROCOS 2.9, ROS 2 Foxy, and our example package
+This README contains an installation procedure, for Ubuntu 20.04 **only**, to set up OROCOS 2.9, ROS 2 Foxy, and our example package
 
 ## Table of Contents
 - [Environment setup](#environment-setup)
@@ -26,11 +26,11 @@ cd ~/rt_kernel
 ```
 
 #### Pre-requirements
-Dependencies :
+Dependencies:
 ```
 sudo apt install build-essential bc curl ca-certificates fakeroot gnupg2 libssl-dev lsb-release libelf-dev bison flex
 ```
-Choose the closest kernel version from [https://www.kernel.org/pub/linux/kernel/projects/rt/](https://www.kernel.org/pub/linux/kernel/projects/rt/) by running : ``` uname -r ```. For example if your kernel version is *"5.8.0-48-generic"*, you should choose *"5.6.19-rt12"*.
+Choose the closest kernel version from [https://www.kernel.org/pub/linux/kernel/projects/rt/](https://www.kernel.org/pub/linux/kernel/projects/rt/) by running: ``` uname -r ```. For example if your kernel version is *"5.8.0-48-generic"*, you should choose *"5.6.19-rt12"*.
 
 ```
 curl -SLO https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.6.19.tar.xz
@@ -42,7 +42,7 @@ xz -d linux-5.6.19.tar.xz
 xz -d patch-5.6.19-rt12.patch.xz
 ```
 #### (Optional) Check file integrity
-Find RSA key IDs :
+Find RSA key IDs:
 ```
 gpg2 --verify linux-5.6.19.tar.sign
 gpg2 --verify patch-5.6.19-rt12.patch.sign
@@ -54,8 +54,8 @@ gpg2  --keyserver hkp://keys.gnupg.net --recv-keys <patch-5.6.19-rt12.patch.sign
 ```
 Verify files:
 ``` 
-gpg2 --verify linux-5.6.19.tar.sign #Should display something like : Good signature from "Greg Kroah-Hartman <gregkh@linuxfoundation.org>"
-gpg2 --verify patch-5.6.19-rt12.patch.sign #Should display something like : Good signature from "Sebastian Andrzej Siewior"
+gpg2 --verify linux-5.6.19.tar.sign #Should display something like: Good signature from "Greg Kroah-Hartman <gregkh@linuxfoundation.org>"
+gpg2 --verify patch-5.6.19-rt12.patch.sign #Should display something like: Good signature from "Sebastian Andrzej Siewior"
 ``` 
  
 
@@ -78,11 +78,11 @@ Replace `<parallel-workers>` by the number of threads available on your computer
 fakeroot sudo make -j<parallel-workers> deb-pkg
 ```
 ###### (Optional) Compilation errors
-If you get the following errors while running :
-- With parallel-workers : ```dpkg-buildpackage: error: debian/rules build subprocess returned exit status 2```
-- Without parallel-workers : ```make[4]: *** No rule to make target 'debian/canonical-certs.pem', needed by 'certs/x509_certificate_list'.  Stop.```
+If you get the following errors while running:
+- With parallel-workers: ```dpkg-buildpackage: error: debian/rules build subprocess returned exit status 2```
+- Without parallel-workers: ```make[4]: *** No rule to make target 'debian/canonical-certs.pem', needed by 'certs/x509_certificate_list'.  Stop.```
 
-Edit the config file (```gedit ~/rt_kernel/linux-5.6.19/.config```) and comment (with ```#```) the following lines :
+Edit the config file (```gedit ~/rt_kernel/linux-5.6.19/.config```) and comment (with ```#```) the following lines:
 - CONFIG_MODULE_SIG_KEY
 - CONFIG_SYSTEM_TRUSTED_KEYS
 
@@ -94,12 +94,12 @@ sudo dpkg -i ../linux-headers-5.6.19-rt12_*.deb ../linux-image-5.6.19-rt12_*.deb
 ##### Verify new kernel
 Restart your system and look for the newly installed kernel in the Grub boot menu. You might need to go into the *Ubuntu advanced boot option* to find the RT kernel (*"Ubuntu, with Linux 5.6.19-rt12"*).
 
-After a successful boot, you can check that you're using the new RT kernel with : ```uname -a```. It should contain **"PREEMPT_RT"**.
+After a successful boot, you can check that you're using the new RT kernel with: ```uname -a```. It should contain **"PREEMPT_RT"**.
 
 ###### (Optional) Booting errors
-If you get the following error : ```error: boot/vmlinuz-5.6.19-rt12 has invalid signature```. 
+If you get the following error: ```error: boot/vmlinuz-5.6.19-rt12 has invalid signature```. 
 
-You can either disable Secure Boot in your UEFI menu or, if you want to keep Secure Boot enabled, sign your kernel with this procedure : [https://askubuntu.com/a/1182830](https://askubuntu.com/a/1182830). If you're trying to sign the kernel, you might want to only use **2** integer for ```countryName = <YOURcountrycode>``` in Step *1* and replace ```[KERNEL-VERSION]-surface-linux-surface``` in the tutorial by ```5.6.19-rt12```.
+You can either disable Secure Boot in your UEFI menu or, if you want to keep Secure Boot enabled, sign your kernel with this procedure: [https://askubuntu.com/a/1182830](https://askubuntu.com/a/1182830). If you're trying to sign the kernel, you might want to only use **2** integer for ```countryName = <YOURcountrycode>``` in Step *1* and replace ```[KERNEL-VERSION]-surface-linux-surface``` in the tutorial by ```5.6.19-rt12```.
 
 ##### Set RT permissions
 ```
@@ -122,7 +122,7 @@ The limits will be applied after you log out and in again.
 sudo apt install grub-customizer
 grub-customizer
 ```
-Modify the boot sequence of the RT kernel by adding the following to the "linux" line after "quiet splash" : ``` nosmt noefi intel_idle.max_cstate=1 pstate_driver=no_hwp clocksource=tsc tsc=reliable rcu_nocb_poll rcu_nocbs=3 nohz_full=3 nmi_watchdog=0 nosoftlockup nosmap audit=0 irqaffinity=0-2 isolcpus=5 ```
+Modify the boot sequence of the RT kernel by adding the following to the "linux" line after "quiet splash": ``` nosmt noefi intel_idle.max_cstate=1 pstate_driver=no_hwp clocksource=tsc tsc=reliable rcu_nocb_poll rcu_nocbs=3 nohz_full=3 nmi_watchdog=0 nosoftlockup nosmap audit=0 irqaffinity=0-2 isolcpus=5 ```
 Essentially, it'll disable hyperthreading and isolate a cpu (isolcpus=<cpuID>) for RT processes.
 -->
 ---
@@ -160,11 +160,11 @@ sudo apt install python3-colcon-common-extensions
 sudo apt install -y python3-argcomplete
 ```
 ##### (Optional) Edit your shell startup script
-Source automatically ROS2 : 
+Source automatically ROS2: 
 ```
 echo "source /opt/ros/foxy/setup.bash" >> ~/.bashrc
 ```
-Source automatically Colcon_cd :
+Source automatically Colcon_cd:
 ```
 echo "source /usr/share/colcon_cd/function/colcon_cd.sh" >> ~/.bashrc
 echo "export _colcon_cd_root=~/ros2_install" >> ~/.bashrc
@@ -206,7 +206,7 @@ colcon build \
     \ -DOROCOS_INSTALL_INTO_PREFIX_ROOT=ON
 ```
 
-Build the Orocos-toolchain with ROS2 integration, you might want to run the following twice. You should only get an "stderr output" for the orocos_toolchain package :
+Build the Orocos-toolchain with ROS2 integration, you might want to run the following twice. You should only get an "stderr output" for the orocos_toolchain package:
 ```
 colcon build \
 --parallel-workers <parallel-workers> \
@@ -221,7 +221,7 @@ colcon build \
    
 ```
 ##### (Optional) Install Orocos-toolchain with tests
-If you also want to install the tests packages :
+If you also want to install the tests packages:
 ```
 sudo apt install ros-foxy-test-msgs
 ```
@@ -236,7 +236,7 @@ import("rtt_ros2")
 The import command should return ```true```.
 
 #### (Optional) Edit your shell startup script
-Source automatically Orocos :
+Source automatically Orocos:
 ```
 echo "source ~/orocos/foxy/local_setup.bash" >> ~/.bashrc
 ```
@@ -262,7 +262,7 @@ colcon build
 ```
 ### Usage
 
-- On Terminal #1, Start pong components :
+- On Terminal #1, Start pong components:
 ```
 source /opt/ros/foxy/setup.bash
 source ~/orocos/foxy/local_setup.bash
@@ -275,7 +275,7 @@ You should get a usable Orocos deployer after the pong components are started. T
 
 NOTE: To close the deployer, use `<Ctrl + D>`
 
-- On Terminal #2, Start match (replace `<Player>` by 1 or 2, to choose the first player to hit the ball) :
+- On Terminal #2, Start match (replace `<Player>` by 1 or 2, to choose the first player to hit the ball):
 
 ```
 source /opt/ros/foxy/setup.bash
@@ -291,15 +291,15 @@ ros2 param set /PingPong/Main_node Player1_hit_chance <hit_chance>
 ros2 param set /PingPong/Main_node Player1_hit_chance <hit_chance>
 ```
 
-- On Terminal #2, you can get the current scores published by the referee :
+- On Terminal #2, you can get the current scores published by the referee:
 ```
 ros2 topic echo /PingPong/score_port
 ```
 NOTE: To stop the previous command, use `<Ctrl + C>`
 
 ## Other Orocos+ROS2 ressources <a name="other-ressources"></a>
-- Another simple example : https://gitlab.com/AntoineHX/orocos_examples
-- OROCOS+ROS courses : https://atlas-itn.eu/training/network-training-activities/nta-3-best-integration-practices-and-robotic-middleware/
+- Another simple example: https://gitlab.com/AntoineHX/orocos_examples
+- OROCOS+ROS courses: https://atlas-itn.eu/training/network-training-activities/nta-3-best-integration-practices-and-robotic-middleware/
 
 ---
 ---
@@ -307,6 +307,6 @@ NOTE: To stop the previous command, use `<Ctrl + C>`
 Contributions from Antoine Harlé (<harle@isir.upmc.fr>), Jimmy Da Silva (<jimmy.dasilva@isir.upmc.fr>), Kenan Niu (<kenan.niu@kuleuven.be>), Sergio Portoles Diez (<sergio.portoles.diez@intermodalics.eu>).
 
 The current installation procedure and code is adapted from:
-- libfranka real-time setup : https://frankaemika.github.io/docs/installation_linux.html#setting-up-the-real-time-kernel
-- ROS2 documentation : https://docs.ros.org/en/foxy/Installation.html
-- OROCOS+ROS examples : https://gitlab.com/dustingooding/orocos_examples/-/tree/feature/ros2
+- libfranka real-time setup: https://frankaemika.github.io/docs/installation_linux.html#setting-up-the-real-time-kernel
+- ROS2 documentation: https://docs.ros.org/en/foxy/Installation.html
+- OROCOS+ROS examples: https://gitlab.com/dustingooding/orocos_examples/-/tree/feature/ros2

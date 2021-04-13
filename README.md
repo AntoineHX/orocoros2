@@ -246,6 +246,8 @@ echo "source ~/orocos/foxy/local_setup.bash" >> ~/.bashrc
 
 OrocoRos2 shows a basic use of the ROS2 publisher/suscriber and services capabilities in Orocos.
 
+![](doc/OrocoRos2.png "OrocoRos2 architecture")
+
 ### Install
 
 ```
